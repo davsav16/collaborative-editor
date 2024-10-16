@@ -44,13 +44,27 @@ export const getDocument = async ({
 }) => {
   try {
     const room = await liveblocks.getRoom(roomId);
-    const hasAccess = Object.keys(room.usersAccesses).includes(userId);
+    // const hasAccess = Object.keys(room.usersAccesses).includes(userId);
 
-    if (!hasAccess) {
-      throw new Error("You don't have access to this document");
-    }
+    // if (!hasAccess) {
+    //   throw new Error("You don't have access to this document");
+    // }
     return parseStringify(room);
   } catch (error) {
     console.log(`Error happened while trying to access the room: ${error}`);
+  }
+};
+
+export const updateDocument = async (roomId: string, title: string) => {
+  try {
+    const updatedRoom = await liveblocks.updateRoom(roomId, {
+      metadata: {
+        title,
+      },
+    });
+    revalidatePath(`/documents/${roomId}`);
+    return parseStringify(updatedRoom);
+  } catch (error) {
+    console.log(`Error happened while updating the room: ${error}`);
   }
 };
